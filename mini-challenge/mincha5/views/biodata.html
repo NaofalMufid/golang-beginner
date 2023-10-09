@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biodata</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+        integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <h2>Profil Page</h2>
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="{{.Photo}}" alt="{{.Name}}">
+                    <div class="card-body">
+                        <h5 class="card-title">NAME: {{.Name}}</h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                        <li class="list-group-item">
+                            <span class="list-group-item-headeing">Email:</span>
+                            <span class="list-group-item-headeing">{{.Email}}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <span class="list-group-item-headeing">Address:</span>
+                            <span class="list-group-item-headeing">{{.Address}}</span>
+                        </li>
+                        <li class="list-group-item">
+                            <span class="list-group-item-headeing">Job:</span>
+                            <span class="list-group-item-headeing">{{.Job}}</span>
+                        </li>
+                    </ul>
+                    <div class="card-body">
+                        <p class="card-text">{{.MBTI}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div style="width: 18rem;">
+                    <hr>
+                    <form action="/logout" method="post">
+                        <input type="submit" value="Logout" class="btn btn-warning">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
