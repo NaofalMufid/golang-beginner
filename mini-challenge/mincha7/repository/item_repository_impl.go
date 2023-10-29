@@ -15,15 +15,14 @@ func NewItemRepository(Db *gorm.DB) ItemRepository {
 	return &ItemRepositoryImpl{Db: Db}
 }
 
-func (i ItemRepositoryImpl) AddToOrder(orderID int, item model.Items) {
-	item.OrderID = orderID
+func (i ItemRepositoryImpl) Save(item model.Items) error {
 	result := i.Db.Create(&item)
-	helper.ErrorPanic(result.Error)
+	return result.Error
 }
 
-func (i ItemRepositoryImpl) Update(item model.Items) {
+func (i ItemRepositoryImpl) Update(item model.Items) error {
 	result := i.Db.Save(&item)
-	helper.ErrorPanic(result.Error)
+	return result.Error
 }
 
 func (i ItemRepositoryImpl) DeleteByOrder(orderID int) {

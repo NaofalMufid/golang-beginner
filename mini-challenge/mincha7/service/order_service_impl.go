@@ -52,6 +52,17 @@ func (o OrderServiceImpl) Update(order request.UpdateOrderRequest) {
 	orderData.CustomerName = order.Customer_Name
 	orderData.OrderedAt = order.Ordered_At
 	o.OrdersRepository.Update(orderData)
+
+	o.ItemService.DeleteByOrder(orderData.Id)
+	for _, newItem := range order.Items {
+		item := model.Items{
+			Name:        newItem.Name,
+			Description: newItem.Description,
+			Quantity:    newItem.Quantity,
+			OrderID:     orderData.Id,
+		}
+		o.ItemService.Create(item)
+	}
 }
 
 func (o OrderServiceImpl) Delete(orderId int) {

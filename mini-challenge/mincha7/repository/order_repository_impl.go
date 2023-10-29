@@ -23,7 +23,7 @@ func (o OrdersRepositoryImpl) Save(orders model.Orders) {
 }
 
 func (o OrdersRepositoryImpl) Update(orders model.Orders) {
-	var updateOrder = request.UpdateOrderRequest{
+	var updateOrder = request.UpdateOrderData{
 		Id:            orders.Id,
 		Customer_Name: orders.CustomerName,
 		Ordered_At:    orders.OrderedAt,
