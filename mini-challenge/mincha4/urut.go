@@ -3,75 +3,32 @@ package main
 import (
 	"fmt"
 	"sync"
-	"time"
 )
 
-type interface1 interface {
-	Print()
-}
-
-type interface2 interface {
-	Print()
-}
-
-type struct1 struct {
-	name string
-}
-
-func (s struct1) Print() {
-	fmt.Println(s.name)
-}
-
-type struct2 struct {
-	name string
-}
-
-func (s struct2) Print() {
-	fmt.Println(s.name)
-}
+var (
+	interface1 interface{}
+	interface2 interface{}
+	wg         sync.WaitGroup
+	mt         sync.Mutex
+)
 
 func main() {
-	// interface1
-	s1 := struct1{
-		name: "Pusing 1",
+	interface1 = []string{"test1", "test2", "test3"}
+	interface2 = []string{"jalan1", "jalan2", "jalan3"}
+
+	for i := 1; i <= 4; i++ {
+		wg.Add(2)
+		mt.Lock()
+		go printProcess(i, &wg, &mt, interface1)
+		mt.Lock()
+		go printProcess(i, &wg, &mt, interface2)
 	}
 
-	// interface2
-	s2 := struct2{
-		name: "Pusing 2",
-	}
+	wg.Wait()
+}
 
-	// mutex
-	mutex := &sync.Mutex{}
-
-	// goroutine 1
-	go func() {
-		for i := 0; i < 4; i++ {
-			// ambil kunci mutex
-			mutex.Lock()
-
-			// cetak data
-			s1.Print()
-
-			// lepas kunci mutex
-			mutex.Unlock()
-		}
-	}()
-
-	// goroutine 2
-	go func() {
-		for i := 0; i < 4; i++ {
-			// ambil kunci mutex
-			mutex.Lock()
-
-			// cetak data
-			s2.Print()
-
-			// lepas kunci mutex
-			mutex.Unlock()
-		}
-	}()
-
-	// tunggu hingga goroutine selesai
-	time.Sleep(time.Second * 1)
+func printProcess(i int, wg *sync.WaitGroup, mt *sync.Mutex, interfaceData interface{}) {
+	fmt.Println(interfaceData, i)
+	mt.Unlock()
+	wg.Done()
 }

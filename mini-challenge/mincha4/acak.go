@@ -2,60 +2,29 @@ package main
 
 import (
 	"fmt"
-	"time"
+	"sync"
 )
 
-type interface1 interface {
-	Print()
-}
-
-type interface2 interface {
-	Print()
-}
-
-type struct1 struct {
-	name string
-}
-
-func (s struct1) Print() {
-	fmt.Println(s.name)
-}
-
-type struct2 struct {
-	name string
-}
-
-func (s struct2) Print() {
-	fmt.Println(s.name)
-}
+var (
+	interface1 interface{}
+	interface2 interface{}
+	wg         sync.WaitGroup
+)
 
 func main() {
-	// interface1
-	s1 := struct1{
-		name: "Mumet 1",
+	interface1 = []string{"test1", "test2", "test3"}
+	interface2 = []string{"jalan1", "jalan2", "jalan3"}
+
+	for i := 1; i <= 4; i++ {
+		wg.Add(2)
+		go printProcess(i, &wg, interface1)
+		go printProcess(i, &wg, interface2)
 	}
 
-	// interface2
-	s2 := struct2{
-		name: "Mumet 2",
-	}
+	wg.Wait()
+}
 
-	// goroutine 1
-	go func() {
-		for i := 0; i < 4; i++ {
-			s1.Print()
-			time.Sleep(time.Millisecond * 100)
-		}
-	}()
-
-	// goroutine 2
-	go func() {
-		for i := 0; i < 4; i++ {
-			s2.Print()
-			time.Sleep(time.Millisecond * 100)
-		}
-	}()
-
-	// menunggu goroutine selesai
-	time.Sleep(time.Second * 1)
+func printProcess(i int, wg *sync.WaitGroup, interfaceData interface{}) {
+	fmt.Println(interfaceData, i)
+	wg.Done()
 }
