@@ -7,8 +7,8 @@ import (
 
 type OrderService interface {
 	Create(orders request.CreateOrderRequest)
-	Update(orders request.UpdateOrderRequest)
-	Delete(ordersId int)
-	FindById(ordersId int) response.OrderResponse
+	Update(orders request.UpdateOrderRequest) error
+	Delete(ordersId int) error
+	FindById(ordersId int) (response.OrderResponse, error)
 	FindAll() []response.OrderResponse
 }

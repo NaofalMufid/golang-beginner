@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Items struct {
-	Id          int        `gorm:"type:int"`
+	Id          int        `gorm:"type:int;primaryKey;autoIncrement"`
 	Name        string     `gorm:"type:varchar(255)"`
 	Description string     `gorm:"type:text"`
 	Quantity    int        `gorm:"type:int"`

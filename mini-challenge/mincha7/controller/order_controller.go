@@ -37,15 +37,25 @@ func (controller *OrderController) Create(ctx *gin.Context) {
 func (controller *OrderController) Update(ctx *gin.Context) {
 	updateOrderRequest := request.UpdateOrderRequest{}
 	err := ctx.ShouldBindJSON(&updateOrderRequest)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	orderId := ctx.Param("order_id")
 	id, err := strconv.Atoi(orderId)
-	helper.ErrorPanic(err)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
 
 	updateOrderRequest.Id = id
 
-	controller.orderService.Update(updateOrderRequest)
+	err = controller.orderService.Update(updateOrderRequest)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:   200,
@@ -60,7 +70,12 @@ func (controller *OrderController) Delete(ctx *gin.Context) {
 	orderId := ctx.Param("order_id")
 	id, err := strconv.Atoi(orderId)
 	helper.ErrorPanic(err)
-	controller.orderService.Delete(id)
+
+	err = controller.orderService.Delete(id)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:   200,
@@ -76,7 +91,12 @@ func (controller *OrderController) FindById(ctx *gin.Context) {
 	id, err := strconv.Atoi(orderId)
 	helper.ErrorPanic(err)
 
-	orderResponse := controller.orderService.FindById(id)
+	orderResponse, err := controller.orderService.FindById(id)
+
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
 
 	webResponse := response.Response{
 		Code:   200,

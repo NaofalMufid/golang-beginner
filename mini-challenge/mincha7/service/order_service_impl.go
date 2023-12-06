@@ -46,9 +46,11 @@ func (o OrderServiceImpl) Create(order request.CreateOrderRequest) {
 	o.OrdersRepository.Save(orderModel)
 }
 
-func (o OrderServiceImpl) Update(order request.UpdateOrderRequest) {
+func (o OrderServiceImpl) Update(order request.UpdateOrderRequest) error {
 	orderData, err := o.OrdersRepository.FindById(order.Id)
-	helper.ErrorPanic(err)
+	if err != nil {
+		return err
+	}
 	orderData.CustomerName = order.Customer_Name
 	orderData.OrderedAt = order.Ordered_At
 	o.OrdersRepository.Update(orderData)
@@ -63,18 +65,26 @@ func (o OrderServiceImpl) Update(order request.UpdateOrderRequest) {
 		}
 		o.ItemService.Create(item)
 	}
+	return nil
 }
 
-func (o OrderServiceImpl) Delete(orderId int) {
-	// delete item
-	o.ItemService.DeleteByOrder(orderId)
-	// delete order
-	o.OrdersRepository.Delete(orderId)
-}
-
-func (o OrderServiceImpl) FindById(orderId int) response.OrderResponse {
+func (o OrderServiceImpl) Delete(orderId int) error {
 	orderData, err := o.OrdersRepository.FindById(orderId)
-	helper.ErrorPanic(err)
+	if err != nil {
+		return err
+	}
+	// delete item
+	o.ItemService.DeleteByOrder(orderData.Id)
+	// delete order
+	o.OrdersRepository.Delete(orderData.Id)
+	return nil
+}
+
+func (o OrderServiceImpl) FindById(orderId int) (response.OrderResponse, error) {
+	orderData, err := o.OrdersRepository.FindById(orderId)
+	if err != nil {
+		return response.OrderResponse{}, err
+	}
 
 	orderResponse := response.OrderResponse{
 		Id:            orderData.Id,
@@ -90,7 +100,7 @@ func (o OrderServiceImpl) FindById(orderId int) response.OrderResponse {
 		}
 		orderResponse.Items = append(orderResponse.Items, itemResponse)
 	}
-	return orderResponse
+	return orderResponse, nil
 }
 
 func (o OrderServiceImpl) FindAll() []response.OrderResponse {

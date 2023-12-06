@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"errors"
 	"mincha7/data/request"
 	"mincha7/helper"
 	"mincha7/model"
@@ -41,12 +40,11 @@ func (o OrdersRepositoryImpl) Delete(ordersId int) {
 
 func (o OrdersRepositoryImpl) FindById(ordersId int) (model.Orders, error) {
 	var order model.Orders
-	result := o.Db.Preload("Items").Find(&order, ordersId)
-	if result != nil {
-		return order, nil
-	} else {
-		return order, errors.New("order not found")
+
+	if err := o.Db.Preload("Items").First(&order, ordersId).Error; err != nil {
+		return order, err
 	}
+	return order, nil
 }
 
 func (o OrdersRepositoryImpl) FindAll() []model.Orders {
